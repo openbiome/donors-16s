@@ -1,0 +1,5 @@
+*.qza
+*.log
+*.biom
+*.tsv
+*.fastq.gz
