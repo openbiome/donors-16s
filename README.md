@@ -4,6 +4,7 @@
 
 - Upload fastq's to SRA
 - Automate downloading fastq's in Snakefile
+- Add output files when about to upload
 
 ## Getting started
 
