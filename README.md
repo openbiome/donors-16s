@@ -19,6 +19,11 @@
 ### Input Scripts and utilities
 
 - `analyze.R`: Performs beta diversity analyses on OTU table
+- `data-descriptions/`:
+    - `donor_health_data.xlsx`: Characteristics of the stool donors in this
+      dataset
+    - `exclusion_criteria_comparison.xlsx`: Comparison of the exclusion
+      criteria used in this data set, HMP, and AGP
 - `env.txt`: Conda environment
 - `fastq/`: Location where raw data is downloaded to
 - `install-packages.R`: Script for installing relevant R packages
