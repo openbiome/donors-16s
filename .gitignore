@@ -3,3 +3,6 @@
 *.biom
 *.tsv
 *.fastq.gz
+*.fasta
+*.txt
+*.pdf
