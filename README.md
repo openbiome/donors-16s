@@ -11,7 +11,7 @@
 
 1. Install [conda](https://docs.conda.io/)
 2. Install the working environment (Qiime and Snakemake): `conda create --name donors-16s --file env.txt`
-3. Install R packages using `./install-packages.R` into that environment
+3. Install R packages into that environment using `./install-packages.R` 
 4. Run `snakemake` in that environment
 
 ## Files
