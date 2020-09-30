@@ -1,74 +1,38 @@
 # Stool banking donors 16S
 
+## To do
+
+- Upload fastq's to SRA
+- Automate downloading fastq's in Snakefile
+
 ## Getting started
 
-### Files needed:
+1. Install [conda](https://docs.conda.io/)
+2. Install the working environment (Qiime and Snakemake): `conda create --name donors-16s --file env.txt`
+3. Install R packages using `./install-packages.R` into that environment
+4. Run `snakemake` in that environment
 
-- otu table (as tsv)
-- metadata file (as tsv, sample_ids should match sample_ids of otu table)
-- confirm_matching_samples.ipynb
-- deseq2_normalization_final.ipynb
+## Files
 
+### Input Scripts and utilities
 
-### Libraries needed:
+- `analyze.R`: Performs beta diversity analyses on OTU table
+- `env.txt`: Conda environment
+- `fastq/`: Location where raw data is downloaded to
+- `install-packages.R`: Script for installing relevant R packages
+- `metadata.tsv`: Sample metadata
+- `README.md`: This file
+- `Snakefile`: File showing the computation order
 
-- pandas
-- numpy
-- datetime
-- scipy
-- matplotlib
-- seaborn
-- skbio
+### Output files
 
-
-### Step 1: Create new OTU table and metadata file with matching samples
-
-Some samples may be filtered out in the 16S pipeline. This step creates new a new otu table and metadata file with matching samples.
-
-**Inputs**
-- otu table
-- metadata file
-
-**Run**
-confirm_matching_samples.ipynb
-
-**Outputs**
-- otu table with all headers matching the metadata file index
-- metadata file with all indices matching the otu table index
-
-
-### Step 2: Normalize OTU table using DESeq2
-
-This step normalizes the raw OTU table using DESeq2. It requires the diffexpr environment. 
-Install the DESeq2 diffexpr environment according to https://github.com/wckdouglas/diffexpr
-
-**Inputs**
-- otu table - output of confirm_matching_samples.ipynb
-- metadata file - output of confirm_matching_samples.ipynb
-
-**Run**
-deseq2_normalization_final.ipynb
-
-**Outputs**
-- normalized otu table 
-
-
-### Step 3: Analyses
-
-This step:
-- uses PCoA analysis to generally visualize differences between donors and runs
-- compares the Jensen Shannon Distance of samples from the same donor versus samples from the same run with using permanova
-- creates a boxplot comparing these samples
-
-**Inputs**
-- otu table - output of confirm_matching_samples.ipynb
-- metadata file - output of confirm_matching_samples.ipynb
-- normalized otu table - output of deseq2_normalization_final.ipynb
-
-**Run**
-public_16S_notebook_final.ipynb
-
-**Outputs**
-- PCoA analysis of data
-- Jensen-Shannon distance matrix
-- boxplot image as .svg
+- `beta.tsv`: Beta diversity matrix
+- `pcoa.tsv`: Sample coordinates
+- `rep-seqs.fasta`: OTUs' representative sequences
+- `results/`
+    - `jsd.pdf`: Boxplot of between-sample JSDs by grouping
+    - `jsd.txt`: Statistical tests of between-sample JSDs by grouping
+    - `pcoa.pdf`: Plot of PCOA ordination
+    - `permanova.txt`: Statistical test of beta diversity
+- `table.tsv`: OTU table
+- `taxonomy.tsv`: RDP taxonomies for OTUs
