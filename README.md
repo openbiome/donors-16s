@@ -5,6 +5,7 @@
 - Upload fastq's to SRA
 - Automate downloading fastq's in Snakefile
 - Add output files when about to upload
+- Make Zenodo release
 
 ## Getting started
 
@@ -37,3 +38,8 @@
     - `permanova.txt`: Statistical test of beta diversity
 - `table.tsv`: OTU table
 - `taxonomy.tsv`: RDP taxonomies for OTUs
+
+## Authors
+
+Marina Santiago <msantiago@openbiome.org>
+Scott Olesen <solesen@openbiome.org>
