@@ -86,22 +86,44 @@ plot <- beta_compare %>%
     y = "Jensen-Shannon divergence"
   )
 
-ggsave("results/jsd.pdf", plot = plot)
+ggsave2("results/jsd.pdf", plot = plot)
 
 
 # PCOA plot -----------------------------------------------------------
 
-pcoa <- read_tsv("pcoa.tsv", col_names = c("sample_id", "coord1", "coord2"), skip = 1)
+pcoa <- read_tsv("pcoa.tsv", col_names = c("sample_id", "coord1", "coord2"), skip = 1) %>%
+  left_join(metadata, by = "sample_id")
 
-plot <- pcoa %>%
-  left_join(metadata, by = "sample_id") %>%
-  # group_by(donor) %>%
-  # summarize_at(c("coord1", "coord2"), mean) %>%
-  ggplot(aes(coord1, coord2, color = factor(run))) +
+run_pcoa <- pcoa %>%
+  group_by(group = run) %>%
+  summarize_if(is.numeric, mean)
+
+donor_pcoa <- pcoa %>%
+  group_by(group = donor) %>%
+  summarize_if(is.numeric, mean)
+
+plot <- bind_rows(
+  run = run_pcoa,
+  donor = donor_pcoa,
+  .id = "label"
+) %>%
+  ggplot(aes(coord1, coord2, shape = label, size = label)) +
   geom_point() +
-  theme_cowplot()
+  scale_shape_manual(values = c(1, 16)) +
+  scale_size_manual(values = c(1.5, 3)) +
+  labs(
+    title = "Sample ordination by donor and sequencing run",
+    caption = str_c(
+      "Filled circles show centroid of samples from each run.\n",
+      "Open circles show centroid of samples from each donor."
+    ),
+    x = "Coordinate 1",
+    y = "Coordinate 2"
+  ) +
+  theme_cowplot() +
+  theme(legend.position = "none")
 
-ggsave("results/pcoa.pdf", plot = plot)
+ggsave2("results/pcoa.pdf", plot = plot)
 
 
 # PERMANOVA and R^2 ---------------------------------------------------
