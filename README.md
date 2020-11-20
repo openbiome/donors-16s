@@ -1,10 +1,20 @@
 # Stool banking donors 16S
 
-## To do
+Universal stool banks provide stool to physicians for use in treating recurrent
+*Clostridioides difficile* infection via fecal microbiota transplantation. Stool
+donors providing the material are rigorously screened for diseases and
+disorders with a potential microbiome etiology, and they are likely healthier
+than the controls in most microbiome datasets. 16S rRNA sequencing was
+performed on samples from a selection of stool bank donors to characterize
+their gut microbial community and to compare samples across different
+timepoints and sequencing runs. 16S rRNA sequencing was performed on 200
+samples derived from 170 unique stool donations from 86 unique donors. Samples
+were sequenced on 11 different sequencing runs.
 
-- Automate downloading fastq's in Snakefile
-- Add output files when about to upload
-- Make Zenodo release
+Raw data are stored at [ENA](https://www.ebi.ac.uk/ena/browser/home) under
+accession [PRJEB41316](https://www.ebi.ac.uk/ena/browser/view/PRJEB41316).
+
+This repository has scripts to reproduce the results in the manuscript.
 
 ## Getting started
 
