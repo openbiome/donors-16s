@@ -1,4 +1,4 @@
-THREADS=2
+THREADS=4
 
 import csv, wget, hashlib
 

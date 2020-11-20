@@ -14,6 +14,9 @@
 4. Install R packages: `./install-packages.R` 
 5. Run `snakemake` in that environment
 
+Depending on your compute environment, you may need to adjust the number of
+threads in the Snakefile.
+
 ## Files
 
 ### Data files

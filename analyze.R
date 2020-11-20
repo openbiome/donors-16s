@@ -16,7 +16,6 @@ beta_tibble <- read_tsv("beta.tsv") %>%
 
 # Load metadata
 metadata <- read_csv("metadata.csv") %>%
-  filter(direction == 1) %>%
   select(sample_id, donor, donation, run)
 
 # Cast beta diversity matrix as a "long" table
@@ -36,11 +35,11 @@ beta_compare <- beta_long %>%
   # only keep 1 comparison per pair; exclude self-self
   filter(sample_id1 < sample_id2) %>%
   mutate(
-    group = case_when(
+    group = factor(case_when(
       donor1 == donor1 & run1 != run2 ~ "same_donor",
       run1 == run2 & donor1 != donor2 ~ "same_run",
       donor1 == donor2 & run1 == run2 ~ "same_both"
-    )
+    ))
   )
 
 if (any(is.na(beta_compare$group))) stop("Incomplete group scheme")
@@ -133,11 +132,17 @@ beta <- beta_tibble %>%
   as.matrix() %>%
   as.dist()
 
-metadata <- read_csv("metadata.csv") %>%
-  filter(sample_id %in% beta_tibble$X1, direction == 1) %>%
-  arrange(sample_id)
+permanova_metadata <- metadata %>%
+  filter(sample_id %in% beta_tibble$X1)
 
-permanova <- adonis2(beta ~ donor + run, data = metadata, by = "margin")
+# check that metadata and matrix are in the same order
+stopifnot(all(permanova_metadata$sample_id == beta_tibble$X1))
+
+permanova <- adonis2(
+  beta ~ donor + run,
+  data = permanova_metadata,
+  by = "margin"
+)
 
 sink("results/permanova.txt")
 permanova
