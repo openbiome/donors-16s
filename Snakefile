@@ -197,6 +197,5 @@ rule demultiplex:
 
 rule download:
     output: "{x}.fastq.gz"
-    input: "file_list.csv"
     run:
         download_fastq(input[0], output[0])
