@@ -2,8 +2,6 @@
 
 ## To do
 
-- Upload fastq's to ENA
-    - Add collection date?
 - Automate downloading fastq's in Snakefile
 - Add output files when about to upload
 - Make Zenodo release
@@ -11,9 +9,10 @@
 ## Getting started
 
 1. Install [conda](https://docs.conda.io/)
-2. Install the working environment (Qiime and Snakemake): `conda create --name donors-16s --file env.txt`
-3. Install R packages into that environment using `./install-packages.R` 
-4. Run `snakemake` in that environment
+2. Install the working environment (Qiime and Snakemake): `conda env create --file env.yml`
+3. Make sure you're in that environment: `conda activate donors-16s`
+4. Install R packages: `./install-packages.R` 
+5. Run `snakemake` in that environment
 
 ## Files
 
@@ -27,14 +26,15 @@
       manuscript
 - `fastq/`: Location where raw data is downloaded to. When downloaded, these
    are "Data set 1" in the manuscript.
-- `metadata.tsv`: Sample metadata. "Data file 4" in the manuscript.
+- `metadata.csv`: Sample metadata. "Data file 4" in the manuscript.
+- `files_list.csv`: Fantastic fastq's and where to download them
 
 ### Input Scripts and utilities
 
 - `README.md`: This file
 - `Snakefile`: File showing the computation order
 - `analyze.R`: Performs beta diversity analyses on OTU table
-- `env.txt`: Conda environment specification
+- `env.yml`: Conda environment specification
 - `install-packages.R`: Script for installing relevant R packages
 
 ### Output files

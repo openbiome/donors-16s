@@ -1,4 +1,41 @@
-THREADS = 4
+THREADS=2
+
+import csv, wget, hashlib
+
+# Get list of fastq files needed for importing
+with open("file_list.csv") as f:
+    reader = csv.DictReader(f)
+    fastq_files = [row["filepath"] for row in reader]
+
+# Functions -----------------------------------------------------------
+
+def download(url, filepath, md5):
+    """Download a url to a filepath, and check that its hash matches an expected one"""
+    if not os.path.isfile(filepath):
+        wget.download(url, filepath)
+
+    with open(filepath, "rb") as f:
+        observed_md5 = hashlib.md5(f.read()).hexdigest()
+        if not observed_md5 == md5:
+            raise RuntimeError(f"Downloaded file {filepath} from url {url}"
+                "has MD5 {observed_md5}, which does not match file manifest's"
+                "expected MD5 {md5}")
+
+def download_fastq(samples_list_fn, fastq_fn):
+    """Look in the samples list file for a particular fastq filepath and
+    download it"""
+    with open("file_list.csv") as f:
+        reader = csv.DictReader(f)
+        row = [row for row in reader if row["filepath"] == fastq_fn]
+
+    # check that there was only 1 match
+    assert len(row) == 1
+    row = row[0]
+
+    # download that file
+    download("ftp://" + row["ftp"], row["filepath"], row["md5"])
+
+# Rules ---------------------------------------------------------------
 
 rule all:
     input:
@@ -6,16 +43,13 @@ rule all:
         "results/permanova.txt", "results/jsd.pdf", "results/pcoa.pdf", "results/jsd.txt"
 
 rule clean:
-    shell: "rm -rf *.qza"
+    # don't delete csv's, which include metadata and file list
+    shell: "rm -rf *.qza *.tsv *.fasta *.biom *.log fastq/* results/*"
 
 rule analyze:
-    output:
-        "results/permanova.txt", "results/jsd.pdf", "results/pcoa.pdf", "results/jsd.txt"
-    input:
-        "beta.tsv", "pcoa.tsv",
-        script="analyze.R"
-    shell:
-        "./{input.script}"
+    output: "results/permanova.txt", "results/jsd.pdf", "results/pcoa.pdf", "results/jsd.txt"
+    input: "beta.tsv", "pcoa.tsv", script="analyze.R"
+    shell: "./{input.script}"
 
 rule export_fasta:
     output: "{x}.fasta"
@@ -43,6 +77,7 @@ rule export_pcoa:
         " --input-path {input}"
         " --output-path ."
         " && cat ordination.txt | awk '/Site\t/,/Biplot/' | head -n -2 > {output}"
+        " && rm ordination.txt"
 
 rule pcoa:
     output: "pcoa.qza"
@@ -80,7 +115,7 @@ rule taxonomy:
     input:
         reads="rep-seqs.qza",
         classifier="classifier.qza"
-    params: n_jobs = THREADS
+    params: n_jobs=THREADS
     shell:
         "qiime feature-classifier classify-sklearn"
         " --i-reads {input.reads}"
@@ -109,14 +144,14 @@ rule export_table:
 
 rule denoise:
     output:
-        table = "table.qza",
-        seqs = "rep-seqs.qza",
-        stats = "denoise-stats.qza"
+        table="table.qza",
+        seqs="rep-seqs.qza",
+        stats="denoise-stats.qza"
     input: "filter.qza"
     params:
-        trim_length = 253,
-        min_reads = 1,
-        jobs_to_start = THREADS
+        trim_length=253,
+        min_reads=1,
+        jobs_to_start=THREADS
     shell:
         "qiime deblur denoise-16S"
         " --i-demultiplexed-seqs {input}"
@@ -130,8 +165,8 @@ rule denoise:
 
 rule filter:
     output:
-        filter = "filter.qza",
-        stats = "filter-stats.qza"
+        filter="filter.qza",
+        stats="filter-stats.qza"
     input: "join.qza"
     shell:
         # N.B.: Qiime 2020.8 does *not* use q-score-joined
@@ -152,9 +187,16 @@ rule join:
 
 rule demultiplex:
     output: "demux.qza"
+    input: fastq_files
     shell:
         "qiime tools import"
         " --type 'SampleData[PairedEndSequencesWithQuality]'"
         " --input-path fastq"
         " --input-format CasavaOneEightSingleLanePerSampleDirFmt"
         " --output-path {output}"
+
+rule download:
+    output: "{x}.fastq.gz"
+    input: "file_list.csv"
+    run:
+        download_fastq(input[0], output[0])
