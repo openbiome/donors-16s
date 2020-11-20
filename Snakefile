@@ -1,4 +1,4 @@
-THREADS = 4
+THREADS=4
 
 rule all:
     input:
@@ -9,13 +9,9 @@ rule clean:
     shell: "rm -rf *.qza"
 
 rule analyze:
-    output:
-        "results/permanova.txt", "results/jsd.pdf", "results/pcoa.pdf", "results/jsd.txt"
-    input:
-        "beta.tsv", "pcoa.tsv",
-        script="analyze.R"
-    shell:
-        "./{input.script}"
+    output: "results/permanova.txt", "results/jsd.pdf", "results/pcoa.pdf", "results/jsd.txt"
+    input: "beta.tsv", "pcoa.tsv", script="analyze.R"
+    shell: "./{input.script}"
 
 rule export_fasta:
     output: "{x}.fasta"
@@ -80,7 +76,7 @@ rule taxonomy:
     input:
         reads="rep-seqs.qza",
         classifier="classifier.qza"
-    params: n_jobs = THREADS
+    params: n_jobs=THREADS
     shell:
         "qiime feature-classifier classify-sklearn"
         " --i-reads {input.reads}"
@@ -109,14 +105,14 @@ rule export_table:
 
 rule denoise:
     output:
-        table = "table.qza",
-        seqs = "rep-seqs.qza",
-        stats = "denoise-stats.qza"
+        table="table.qza",
+        seqs="rep-seqs.qza",
+        stats="denoise-stats.qza"
     input: "filter.qza"
     params:
-        trim_length = 253,
-        min_reads = 1,
-        jobs_to_start = THREADS
+        trim_length=253,
+        min_reads=1,
+        jobs_to_start=THREADS
     shell:
         "qiime deblur denoise-16S"
         " --i-demultiplexed-seqs {input}"
@@ -130,8 +126,8 @@ rule denoise:
 
 rule filter:
     output:
-        filter = "filter.qza",
-        stats = "filter-stats.qza"
+        filter="filter.qza",
+        stats="filter-stats.qza"
     input: "join.qza"
     shell:
         # N.B.: Qiime 2020.8 does *not* use q-score-joined
