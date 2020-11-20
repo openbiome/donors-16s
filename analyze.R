@@ -15,7 +15,7 @@ beta_tibble <- read_tsv("beta.tsv") %>%
   select_at(c("X1", .$X1))
 
 # Load metadata
-metadata <- read_tsv("metadata.tsv") %>%
+metadata <- read_csv("metadata.csv") %>%
   filter(direction == 1) %>%
   select(sample_id, donor, donation, run)
 
@@ -133,7 +133,7 @@ beta <- beta_tibble %>%
   as.matrix() %>%
   as.dist()
 
-metadata <- read_tsv("metadata.tsv") %>%
+metadata <- read_csv("metadata.csv") %>%
   filter(sample_id %in% beta_tibble$X1, direction == 1) %>%
   arrange(sample_id)
 
