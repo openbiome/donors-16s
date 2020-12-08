@@ -1,11 +1,5 @@
 # Stool banking donors 16S
 
-## To do
-
-- Automate downloading fastq's in Snakefile
-- Add output files when about to upload
-- Make Zenodo release
-
 ## Getting started
 
 1. Install [conda](https://docs.conda.io/)
@@ -51,7 +45,8 @@ threads in the Snakefile.
     - `jsd.txt`: Statistical tests of between-sample JSDs by grouping
     - `pcoa.pdf`: Plot of PCOA ordination. "Figure 2" in the manuscript.
     - `permanova.txt`: Statistical test of beta diversity
-- `table.tsv`: OTU table. "Data file 3" in the manuscript.
+- `table.tsv`: OTU table. "Data file 3" in the manuscript. (This file is
+  version-controlled for compliance with journal.)
 - `taxonomy.tsv`: RDP taxonomies for OTUs
 
 ## Authors

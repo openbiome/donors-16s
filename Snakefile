@@ -39,7 +39,7 @@ def download_fastq(samples_list_fn, fastq_fn):
 
 rule all:
     input:
-        "table.tsv", "taxonomy.tsv", "rep-seqs.fasta",
+        "otu_table.tsv", "taxonomy.tsv", "rep-seqs.fasta",
         "results/permanova.txt", "results/jsd.pdf", "results/pcoa.pdf", "results/jsd.txt"
 
 rule clean:
@@ -91,7 +91,7 @@ rule pcoa:
 
 rule beta:
     output: "beta.qza"
-    input: "table.qza"
+    input: "otu_table.qza"
     params:
         metric="jensenshannon",
         pseudocount=1
@@ -144,7 +144,7 @@ rule export_table:
 
 rule denoise:
     output:
-        table="table.qza",
+        table="otu_table.qza",
         seqs="rep-seqs.qza",
         stats="denoise-stats.qza"
     input: "filter.qza"
